@@ -1,0 +1,138 @@
+<!DOCTYPE>
+<html prefix="og: http://ogp.me/ns#">
+<head>
+	<title>小捲捲ㄉ窩</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="小捲捲ㄉ第一個窩，終於有自己了網站了嚕～" />
+    <meta property="og:title" content="小捲捲ㄉ窩" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="" />
+    <meta property="og:image" content="" />
+    <meta property="og:image:width" content="" />
+    <meta property="og:image:height" content="" />
+    <meta property="og:site_name" content="小捲捲ㄉ窩" />
+    <meta property="og:description" content="小捲捲ㄉ第一個窩，終於有自己了網站了嚕～" />
+    <meta property="twitter:title" content="小捲捲ㄉ窩" />
+    <meta property="twitter:description" content="小捲捲ㄉ第一個窩，終於有自己了網站了嚕～" />
+    <link href="favicon.ico" rel="shortcut icon">
+    <link href="favicon.ico" rel="icon">
+</head>
+<body>
+	<div id="particles-js"></div>
+    <div class="fullpage">
+        <div id="mylogo">
+            <img id="mylogoImg" src="images/LOGO.png" style="display: block;margin: 0 auto;"/>
+            <div class="linkbtn" id = "link0"><a href="https://www.facebook.com/XJ.Xquid/" target="_blank"><img src="images/facebook.png"></a></div>
+            <div class="linkbtn" id = "link1"><a href="https://www.plurk.com/benzngf" target="_blank"><img src="images/plurk.png"></a></div>
+            <div class="linkbtn" id = "link2"><a href="http://space.bilibili.com/11756234/" target="_blank"><img src="images/bili.png"></a></div>
+            <div class="linkbtn" id = "link3"><a href="http://www.nicovideo.jp/my/mylist/#/53278706" target="_blank"><img src="images/nico.png"></a></div>
+            <div class="linkbtn" id = "link4"><a href="https://www.youtube.com/channel/UC1T-KkV7zeaAfdWsPzo5ekw" target="_blank"><img src="images/youtube.png"></a></div>
+            <div class="linkbtn" id = "link5"><a href="https://soundcloud.com/xquid" target="_blank"><img src="images/soundcloud.png"></a></div>
+            <div class="linkbtn" id = "link6"><a href="https://github.com/benzngf" target="_blank"><img src="images/github.png"></a></div>
+        </div>
+    </div>
+    <div class="context">
+        <h1>安安我是小捲</h1>
+        <p>這個網站目前還沒有好<br>總之可以先玩玩上面那個Logo然後連到其他地方<br>就這樣囉掰掰<br><br><br><br><br><br><br><br><br><br><br><br><br>耶<br><br><br><br>耶耶</p>
+
+    </div>
+    <div class="fullpage">
+        <iframe width="100%" height="100%" src="https://www.youtube.com/embed/RIsfT3_F9Ko" frameborder="0" allowfullscreen></iframe>
+    </div>
+    <div class="context">
+        <h1>嗯...</h1>
+        <p>不是說掰掰了你怎麼還在？<br><br><br>總之上面是一個我做的影片<br>掰掰<br><br><br><br><br><br><br><br><br><br><br><br><br>耶<br><br><br><br>耶耶</p>
+    </div>
+	<!-- particles.js lib - https://github.com/VincentGarreau/particles.js --> 
+	<script src="scripts/particles.min.js"></script>
+    <script src="scripts/particle.js"></script>
+    <script type="text/javascript">
+        var expanded = false;
+        var btns = [document.getElementById("link0"),
+        document.getElementById("link1"),
+        document.getElementById("link2"),
+        document.getElementById("link3"),
+        document.getElementById("link4"),
+        document.getElementById("link5"),
+        document.getElementById("link6")];
+        var expanding = -1;
+        function expandBtns(){
+            expanding = 0;
+            for(i = 0; i < btns.length; i++){
+                window.setTimeout(function(){
+                    if(expanding >= 0 ){
+                        btns[expanding].style.transform = "translate(-50%, -50%) scale(1.0,1.0)";
+                        btns[expanding].style.top = ""+(50-Math.cos(2*Math.PI*expanding/btns.length)*42)+"%";
+                        btns[expanding].style.left = ""+(50+Math.sin(2*Math.PI*expanding/btns.length)*42)+"%";
+                        expanding++;
+                    }
+                }, 80*i);
+            }
+            //console.log("expand\n");
+        }
+        function collapseBtns(){
+            expanding = -100;
+            for(i = 0; i < btns.length; i++){
+                btns[i].style.transform = "translate(-50%, -50%) scale(0,0)";
+                btns[i].style.top = "50%";
+                btns[i].style.left = "50%";
+            }
+            //console.log("collapse\n");
+        }
+        function expandHandle(event){
+            switch(event.type){
+                case "click":
+                    if(expanded == true){
+                        collapseBtns();
+                        expanded = false;
+                    }else{
+                        expandBtns();
+                        expanded = true;
+                    }
+                break;
+                case "mouseleave":
+                    if(expanded == true){
+                        collapseBtns();
+                        expanded = false;
+                    }
+                break;
+                case "mouseenter":
+                    if(expanded == false){
+                        window.setTimeout(expandBtns, 100);
+                        expanded = true;
+                    }
+                break;
+                default:
+                console.log("undefined event\n");
+                break;
+            }
+        }
+        function btnhover(event){
+            if(expanded==true){
+                switch(event.type){
+                    case "mouseleave":
+                        event.target.style.transform = "translate(-50%, -50%) scale(1.0,1.0)";
+                    break;
+                    case "mouseenter":
+                        event.target.style.transform = "translate(-50%, -50%) scale(1.2,1.2)";
+                    break;
+                    default:
+                        console.log("undefined event\n");
+                    break;
+
+                }
+            }
+        }
+        document.getElementById("mylogoImg").addEventListener("click", expandHandle);
+        document.getElementById("mylogoImg").addEventListener("mouseenter", expandHandle);
+        document.getElementById("mylogo").addEventListener("mouseleave", expandHandle);
+        for(i = 0; i < btns.length; i++){
+            btns[i].addEventListener("mouseenter", btnhover);
+            btns[i].addEventListener("mouseleave", btnhover);
+        }
+    </script>
+</body>
+</html>
