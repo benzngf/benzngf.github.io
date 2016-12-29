@@ -4,6 +4,7 @@ html {
     background-color: #283b6e;
     margin:0;
     padding:0;
+    overflow-x: hidden;
 }
 
 body {
@@ -14,10 +15,12 @@ body {
     padding:0;
     background-color: #283b6e;
     color: #fffadc;
+    word-wrap:break-word;
+    position: relative;
 }
 h1,h2,h3,h4,h5,h6{
    -webkit-text-fill-color: #fffadc; /* Will override color (regardless of order) */
-
+   word-wrap:break-word;
    text-shadow:
    -2px -2px 0 #261b0e,  
     2px -2px 0 #261b0e,
@@ -28,7 +31,9 @@ h1,h2,h3,h4,h5,h6{
      0px -2px 0 #261b0e,
     -2px 0px 0 #261b0e;
 }
-
+p{
+    word-wrap:break-word;
+}
 /* ---- reset ---- */  canvas{ display: block; vertical-align: bottom;position:fixed; } /* ---- particles.js container ---- */ #particles-js{ position:fixed; width: 100%; height: 100%; background-color: #283b6e; background-image: url(""); background-repeat: no-repeat; background-size: cover; background-position: 50% 50%; } /* ---- stats.js ---- */ .count-particles{ background: #000022; position: absolute; top: 48px; left: 0; width: 80px; color: #13E8E9; text-align: left; text-indent: 4px; line-height: 14px; padding-bottom: 2px; font-family: Helvetica, Arial, sans-serif; font-weight: bold; } .js-count-particles{  } #stats, .count-particles{ -webkit-user-select: none; margin-top: 5px; margin-left: 5px; } #stats{ border-radius: 3px 3px 0 0; overflow: hidden; } .count-particles{ border-radius: 0 0 3px 3px; }
 .fullpage{
     width: 100%;
