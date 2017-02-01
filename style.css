@@ -1,26 +1,81 @@
-/* Common objects */
+*{
+    /*border: solid 1px;*/
+    position: relative;
+}
 html {
     width: 100%;
     background-color: #283b6e;
     margin:0;
     padding:0;
-    overflow-x: hidden;
 }
-
 body {
     width: 100%;
-    font-family: "微軟正黑體",sans-serif;
-    overflow-x: hidden;
+    font-family:"Varela Round","Noto Sans","Microsoft JhengHei","PT Sans Narrow","Source Han Sans TWHK",sans-serif;
     margin:0;
     padding:0;
     background-color: #283b6e;
-    color: #fffadc;
-    word-wrap:break-word;
     position: relative;
+    scroll-behavior: smooth;
 }
-h1,h2,h3,h4,h5,h6{
-   -webkit-text-fill-color: #fffadc; /* Will override color (regardless of order) */
-   word-wrap:break-word;
+.smooth-container { scroll-behavior: smooth }
+h1{font-size: 32pt; margin-bottom: 12pt;}
+.fullpage h1,.fullpage h2,.fullpage h3,.fullpage h4,.fullpage h5,.fullpage h6{
+    text-align: center;
+    color: #ffffff;
+    margin: 5px;
+}
+#navbar a{
+    text-decoration: none;
+}
+.navBtn{
+    display: inline-block;
+    padding: 6pt;
+    padding-left: 20pt;
+    padding-right: 20pt;
+    margin: 8px;
+    border-bottom: solid 3px rgba(206,244,255,0);
+    transition-duration: 0.5s;
+}
+.navBtn:hover{
+    border-bottom: solid 3px rgba(206,244,255,1);
+}
+.navBtn span{
+    position: relative;
+    color: #cef4ff;
+    font-size: 14pt;
+    font-weight: 900;
+    bottom: 0px;
+    transition-duration: 0.5s; 
+}
+.navBtn:hover span{
+    color: #ffffff;
+    bottom: 5px;
+}
+.navGroup{
+    display: table-cell;
+    vertical-align: middle;
+}
+#navbar{
+    z-index: 100;
+    text-align: center;
+    display: table;
+    width: 100%;
+    background: linear-gradient(rgba(15,21,40,0), rgba(15,21,40,0.5));
+}
+#navbarLogo{
+    -ms-transform: scale(1,1); /* IE 9 */
+    -webkit-transform: scale(1,1); /* Safari */
+    transform: scale(1,1);
+    transition-duration: 0.5s;
+}
+#navbarLogo:hover{
+    -ms-transform: scale(1.2,1.2); /* IE 9 */
+    -webkit-transform: scale(1.2,1.2); /* Safari */
+    transform: scale(1.2,1.2);
+}
+.bg h1,.bg h2,.bg h3,.bg h4,.bg h5,.bg h6{
+    text-align: center;
+    color: #ffffff;
    text-shadow:
    -2px -2px 0 #261b0e,  
     2px -2px 0 #261b0e,
@@ -31,9 +86,23 @@ h1,h2,h3,h4,h5,h6{
      0px -2px 0 #261b0e,
     -2px 0px 0 #261b0e;
 }
-p{
-    word-wrap:break-word;
+.content h1,.content h2,.content h3,.content h4,.content h5,.content h6,.content p{
+    text-align: left;
+    text-shadow: none;
+    color: #233d37;
 }
+.content a{
+    text-shadow: none;
+    color: #2f6458;
+    font-weight: 900;
+    text-decoration: none;
+}
+.content a:hover{
+    color: #085242;
+    text-decoration: underline;
+}
+ul{margin-left:-12pt; color: #233d37; }
+li{margin-bottom: 5pt;}
 /* ---- reset ---- */  canvas{ display: block; vertical-align: bottom;position:fixed; } /* ---- particles.js container ---- */ #particles-js{ position:fixed; width: 100%; height: 100%; background-color: #283b6e; background-image: url(""); background-repeat: no-repeat; background-size: cover; background-position: 50% 50%; } /* ---- stats.js ---- */ .count-particles{ background: #000022; position: absolute; top: 48px; left: 0; width: 80px; color: #13E8E9; text-align: left; text-indent: 4px; line-height: 14px; padding-bottom: 2px; font-family: Helvetica, Arial, sans-serif; font-weight: bold; } .js-count-particles{  } #stats, .count-particles{ -webkit-user-select: none; margin-top: 5px; margin-left: 5px; } #stats{ border-radius: 3px 3px 0 0; overflow: hidden; } .count-particles{ border-radius: 0 0 3px 3px; }
 .fullpage{
     width: 100%;
@@ -42,14 +111,52 @@ p{
     margin: 0px;
     padding: 0px;
 }
-.context{
+.bg{
     width: 100%;
     position: relative;
     margin: 0px;
     padding: 20px;
-    padding-left: 10%;
-    padding-right: 10%;
+    padding-left: 0px;
+    padding-right: 0px;
     background-color: rgba(15,21,40,0.5);
+}
+.footer{
+    text-align: center;
+    width: 100%;
+    position: relative;
+    margin: 0px;
+    padding: 10px;
+    padding-left: 0px;
+    padding-right: 0px;
+    background: linear-gradient(rgba(15,21,40,0.5),rgba(15,21,40,0));
+}
+.footer p{
+    color: #ffffff;
+}
+.footer a{
+    color: #cef4ff;
+    font-weight: 900;
+    text-decoration: none;
+    margin-left: 6px;
+    margin-right: 6px;
+}
+.footer a:hover{
+    color: #ffffff;
+    text-decoration: underline;
+}
+.content{
+    width: 95%;
+    max-width: 1024px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 5px;
+    margin-bottom: 54px;
+    padding: 20px;
+    padding-left: 32px;
+    padding-right: 32px;
+    background-color: rgb(240,240,240);
+    border-radius: 20px;
+    box-sizing: border-box;
 }
 .fixed{
     position:fixed;
@@ -57,10 +164,10 @@ p{
 #mylogo{
     position: absolute;
     margin: 0px auto;
-    height:50%;
+    height:36%;
     padding: 10%;
     left:50%;
-    top:50%;
+    top:40%;
     -webkit-transform-origin: 50%, 50% 0px; /* Chrome, Safari, Opera */
     -ms-transform-origin: 50%, 50% 0px; /* IE 9 */
     transform-origin: 50% 50% 0px;
@@ -82,18 +189,17 @@ p{
     -webkit-transform: scale(0.8,0.8); /* Safari */
     transform: scale(0.8,0.8);
 }
-/*div{
-    outline-width: 2px;
-    outline-style: solid;
-    outline-color: #FFFFFF;
-    margin:0;
-    padding:0;
-}*/
+#welcomeMsg{
+    position: absolute;
+    width: 100%;
+    bottom: 24%;
+    transition:0.5s;
+}
 .linkbtn{
     position: absolute;
     margin: 0px auto;
-    height:15%;
-    width:15%;
+    height:12%;
+    width:12%;
     left:50%;
     top:50%;
     -webkit-transform-origin: 50%, 50% 0px; /* Chrome, Safari, Opera */
@@ -104,6 +210,39 @@ p{
     transform: translate(-50%, -50%) scale(0,0);
     transition:0.5s;
 }
-img{
+#myLogo img{
     height:100%;
+}
+@keyframes upDown {
+  0% {
+    transform: translate(-50% ,0%);
+  }
+  100% {
+    transform: translate(-50% ,-20%);
+  }
+}
+#scrollDown{
+    position: absolute;
+    left: 50%;
+    bottom: 5px;
+    transform: translate(-50%, 0%);
+    width: 20%;
+    max-width: 100px;
+    text-align: center;
+    animation: upDown 1s ease-in-out infinite alternate;
+}
+#toTop{
+    position: fixed;
+    right: 2%;
+    bottom: 25px;
+    width: 64px;
+    height: 64px;
+    opacity: 0.3;
+    transition-duration: 0.5s;
+    border-radius: 50%;
+    background-color: #3754a4;
+}
+#toTop:hover{
+    bottom: 32px;
+    opacity: 1.0;
 }
