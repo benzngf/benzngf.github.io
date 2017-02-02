@@ -9,13 +9,10 @@ xmlhttp.onreadystatechange = function() {
     if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
         document.getElementById("start").insertAdjacentHTML('beforebegin', xmlhttp.responseText);
         var particleScript = document.createElement('script');
-        var LogoScript = document.createElement('script');
-        particleScript.setAttribute('src', 'scripts/particle.js');
-        LogoScript.setAttribute('src', 'scripts/logo.js');
+        particleScript.setAttribute('src', '/scripts/particle.js');
         document.body.appendChild(particleScript);
-        document.body.appendChild(LogoScript);
     }
 }
-xmlhttp.open("GET", "header.html", true);
+xmlhttp.open("GET", "/header.html", true);
 xmlhttp.send();
 

@@ -10,5 +10,5 @@ xmlhttp2.onreadystatechange = function() {
         document.getElementById("start").insertAdjacentHTML('afterend', xmlhttp2.responseText);
     }
 }
-xmlhttp2.open("GET", "footer.html", true);
+xmlhttp2.open("GET", "/footer.html", true);
 xmlhttp2.send();
