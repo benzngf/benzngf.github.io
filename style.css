@@ -250,8 +250,7 @@ li{margin-bottom: 5pt;}
 }
 .contentBtn{
     display: inline-block;
-    width: 100%;
-    max-width: 376px;
+    width: 32%;
     margin: 0px;
     padding: 0px;
     background-color: #43484f;
@@ -267,7 +266,7 @@ li{margin-bottom: 5pt;}
 }
 .contentBtn img{
     width: 100%;
-    max-height: 212px;
+    /*max-height: 212px;*/
     transition-duration: 3s;
 }
 .contentBtn:hover img{
@@ -277,7 +276,8 @@ li{margin-bottom: 5pt;}
     margin: 0;
     background-color: #36393c;
     color: #FFFFFF;
-    padding: 6px;
+    padding: 1px;
+    padding-top: 6px;
     padding-left: 5%;
     padding-right: 5%;
 }
@@ -288,9 +288,10 @@ li{margin-bottom: 5pt;}
     margin: 0;
     background-color: #36393c;
     color: #FFFFFF;
+    padding: 5px;
     padding-left: 5%;
     padding-right: 5%;
-    min-height: 60px;
+    min-height: 65px;
 }
 .contentBtn a{
     text-decoration: none;
