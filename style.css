@@ -264,8 +264,10 @@ li{margin-bottom: 5pt;}
     transform: translateY(-10px);
     box-shadow: 0 13px 5px -5px rgba(0,0,0,0.5);
 }
-.contentBtn img{
+.content img{
     width: 100%;
+}
+.contentBtn img{
     /*max-height: 212px;*/
     transition-duration: 3s;
 }
@@ -295,4 +297,49 @@ li{margin-bottom: 5pt;}
 }
 .contentBtn a{
     text-decoration: none;
+}
+#TVFrame{
+    width: 704px;
+    max-width: 95%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 5px;
+    margin-bottom: 0px;
+    padding: 20px;
+    padding-left: 32px;
+    padding-right: 32px;
+    background-color: rgb(240,240,240);
+    border-radius: 20px;
+    box-sizing: border-box;
+    transition-duration: 0.5s;
+}
+.TVLabelGroup{
+    margin: 0px;
+    margin-bottom: 12px;
+    padding: 0px;
+    text-align: center;
+}
+.TVLabel{
+    margin: 0px;
+    padding: 6px;
+    padding-right: 12px;
+    border-radius: 0px 0px 12px 12px;
+    padding-left: 12px;
+    display: inline-block;
+    background-color: rgb(240,240,240);
+    box-shadow: inset 0px 10px 10px -8px rgba(0,0,0,0.5);
+    transition-duration: 0.5s;
+    cursor: pointer;
+}
+.TVLabel:hover{
+    box-shadow: inset 0px 0px 10px -5px rgba(0,0,0,0.5);
+}
+.videoFrame{
+    margin: 0;
+    padding: 0;
+    background-image: url("/images/noise.jpg");
+    background-size: 100% 100%;
+    width: 640px;
+    max-width: 100%;
+    height: 360px;
 }

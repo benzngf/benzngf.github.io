@@ -1,7 +1,6 @@
 var currentSize = "33%";
 function resizeContentBtn() {
 	var content = document.getElementsByClassName("content");
-	console.log(content[0].offsetWidth);
 	if(content[0].offsetWidth < 600){
 		if(currentSize != "100%"){
 			var elements = document.getElementsByClassName("contentBtn");
