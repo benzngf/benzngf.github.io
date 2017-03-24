@@ -250,10 +250,10 @@ li{margin-bottom: 5pt;}
 }
 .contentBtn{
     display: inline-block;
-    width: 32%;
+    width: 24%;
     margin: 0px;
     padding: 0px;
-    background-color: #43484f;
+    background-color: #FFF;
     overflow: hidden;
     transition-duration: 0.4s;
     box-shadow: 0 0 5px -5px rgba(0,0,0,0.5);
@@ -276,24 +276,29 @@ li{margin-bottom: 5pt;}
 }
 .contentBtn h3{
     margin: 0;
-    background-color: #36393c;
-    color: #FFFFFF;
+    background-color: #FFF;
+    color: #36393c;
     padding: 1px;
     padding-top: 6px;
     padding-left: 5%;
     padding-right: 5%;
+    height: 20px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 .contentBtn:hover h3{
     text-decoration: underline;
 }
 .contentBtn p{
     margin: 0;
-    background-color: #36393c;
-    color: #FFFFFF;
+    background-color: #FFF;
+    color: #36393c;
     padding: 5px;
     padding-left: 5%;
     padding-right: 5%;
-    min-height: 65px;
+    height: 65px;
+    overflow: hidden;
 }
 .contentBtn a{
     text-decoration: none;

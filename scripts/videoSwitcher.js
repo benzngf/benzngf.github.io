@@ -35,6 +35,17 @@ var changeVideo = function(site, vid){
 			}
 		}
 		break;
+		case 'FB':
+		TVframe.innerHTML = '<div class="videoFrame"><iframe src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2F'+vid+'%2F&show_text=0&width=640" width="100%" height="100%" style="border:none;overflow:hidden;background-color:#000;" scrolling="no" frameborder="0" allowTransparency="true" allowFullScreen="true"></iframe></div>';
+		TVframe.style.backgroundColor = '#3b5998';
+		for (var i = labels.length - 1; i >= 0; i--) {
+			if(labels[i].id == site){
+				labels[i].style = 'box-shadow: inset 0px 0px 10px -5px rgba(0,0,0,0.5); background-color: #3b5998; color:#ffffff;';
+			}else{
+				labels[i].style = '';
+			}
+		}
+		break;
 		default:
 		console.log('no such site');
 		TVframe.style = '';
