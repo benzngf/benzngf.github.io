@@ -282,8 +282,10 @@ li{margin-bottom: 5pt;}
     padding-top: 6px;
     padding-left: 5%;
     padding-right: 5%;
-    height: 20px;
+    height: 1.3em;
+    font-size: 1.17em;
     overflow: hidden;
+    /*z-index: 1;*/
     text-overflow: ellipsis;
     white-space: nowrap;
 }
