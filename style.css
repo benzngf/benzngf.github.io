@@ -395,3 +395,6 @@ a{
     height: 100%;
     overflow: hidden;
 }
+.disable {
+    display:none;
+}
