@@ -47,7 +47,7 @@ function switchVid(site) {
             }
             break;
         case 'Bili':
-            TVframe.innerHTML = '<div class="videoFrame"><embed height="370" width="100%" quality="high" allowfullscreen="true" type="application/x-shockwave-flash" src="//static.hdslb.com/miniloader.swf" flashvars="aid=' + vid + '&page=1" pluginspage="//www.adobe.com/shockwave/download/download.cgi?P1_Prod_Version=ShockwaveFlash"></embed></div>';
+            TVframe.innerHTML = '<div class="videoFrame"><iframe src="//player.bilibili.com/player.html?aid='+vid+'" width="100%" height="100%" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe></div>';
             TVframe.style.backgroundColor = '#ff709f';
             for (var i = labels.length - 1; i >= 0; i--) {
                 if (labels[i].id == site) {
