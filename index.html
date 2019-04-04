@@ -41,12 +41,13 @@
     <div class="bg" id="start">
     	<h1>Showreel 2017</h1>
 	    <div class="content">
-	        <div id="YouTubeVideoPlayer"></div>
+            <div style="position: relative; width: 100%; padding-top: 56.25%;">
+            <div id="YouTubeVideoPlayer" style="position: absolute; top: 0; left: 0; bottom: 0; right: 0;"></div>
+            </div>
 	    </div>
 	    <h1>關於小捲</h1>
 	    <div class="content">
 	    	<ul>
-	    		<li>大學生</li>
 	    		<li>現居台灣</li>
 	    		<li>致力創作中文Vocaloid™及其他虛擬歌手歌曲，已有10餘首自創詞曲</li>
 	    		<li>喜歡影像創作，並曾製作多部音樂PV、Motion Graphics動畫等</li>
@@ -81,7 +82,7 @@
       player = new YT.Player('YouTubeVideoPlayer', {
         videoId: 'PejMIn3DwfQ', // YouTube 影片ID
         width: "100%",               // 播放器寬度 (px)
-        height: "640px",              // 播放器高度 (px)
+        height: "100%",              // 播放器高度 (px)
         playerVars: {
           autoplay: 0,        // 在讀取時自動播放影片
           controls: 1,        // 在播放器顯示暫停／播放按鈕
