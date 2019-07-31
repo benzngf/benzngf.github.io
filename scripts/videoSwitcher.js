@@ -58,7 +58,7 @@ function switchVid(site) {
             }
             break;
         case 'Nico':
-            TVframe.innerHTML = '<div class="videoFrame"><iframe allowfullscreen="allowfullscreen" frameborder="0" width="100%" height="100%" src="http://embed.nicovideo.jp/watch/' + vid + '?oldScript=1&amp;allowProgrammaticFullScreen=1" style="max-width: 100%;"></iframe></div>';
+            TVframe.innerHTML = '<div class="videoFrame"><iframe allowfullscreen="allowfullscreen" frameborder="0" width="100%" height="100%" src="https://embed.nicovideo.jp/watch/' + vid + '?oldScript=1&amp;allowProgrammaticFullScreen=1" style="max-width: 100%;"></iframe></div>';
             TVframe.style.backgroundColor = '#ffffff';
             for (var i = labels.length - 1; i >= 0; i--) {
                 if (labels[i].id == site) {
