@@ -82,6 +82,7 @@ function mainFunction()
 	}
 	
 	var finalStr = '';
+	finalStr2Copy = '';
 	w = canvas.width;
 	h = canvas.height;
 	var R,G,B;
@@ -184,7 +185,7 @@ function changeFontSize()
 	<div style="margin: 0px; font-size: 10pt;">顯示字體大小：<input type="number" id="fontsize" min="8" value="10" style="text-align: right; display:inline-block; width: 50px;" onchange="changeFontSize()">pt</input>
 	</div>
 	<div style="display:block;">
-		<div id="content-containter" style="display:inline-block;" >
+		<div id="content-containter" style="display:inline-block; z-index: 100;" >
 			<div id="image-container" >
 				<img id="image" src="" style="display:none;">
 				<canvas id="modImageCanvas" style="display:none;"></canvas>
@@ -194,7 +195,7 @@ function changeFontSize()
 		</div>
 	</div>
 	
-	<button class="btn" onclick="copyText()" style=" margin-bottom: 50px;">複製做好的內容文字</button>
+	<button class="btn" onclick="copyText()" style=" margin-bottom: 50px; z-index: 0;">複製做好的內容文字</button>
 	<textarea id="TxtToCopy" style="width: 1px; height: 1px; position: fixed; left: 100%; bottom: 0;"></textarea>
 	<div style="display:block; font-size: 10pt; position: fixed; bottom: 0; width: 100%; background-color: rgba(50,50,50,0.85); padding-top: 5px; padding-bottom: 5px;">所有內容皆在您的本機計算，我也不會收到任何您的資料，請放心使用<br>Made by <a href="http://xquid.work/" style="color: #3A8FB7;">Xquid</a>, 2019</div>
 </body>
