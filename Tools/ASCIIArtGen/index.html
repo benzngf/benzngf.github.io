@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>純文字の藝術師</title>
+<meta name="description" content="把你的圖變成最潮最炫炮，技術宅最愛ㄉASCII Art！" />
+<meta property="og:title" content="純文字の藝術師.html" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="http://www.xquid.work/Tools/ASCIIArtGen" />
+<meta property="og:image" content="http://www.xquid.work/Tools/ASCIIArtGen/og.jpg" />
+<meta property="og:image:width" content="594" />
+<meta property="og:image:height" content="367" />
+<meta property="og:site_name" content="純文字の藝術師" />
+<meta property="og:description" content="把你的圖變成最潮最炫炮，技術宅最愛ㄉASCII Art！" />
+<meta property="twitter:title" content="純文字の藝術師" />
+<meta property="twitter:description" content="把你的圖變成最潮最炫炮，技術宅最愛ㄉASCII Art！" />
+<link href="favicon.png" rel="shortcut icon">
+<link href="favicon.png" rel="icon">
+<link rel="stylesheet" href="style.css">
+<script type="text/javascript">
+function RGB2LAB(r,g,b){
+	//algorithm from https://cg2010studio.com/2012/10/02/rgb%E8%88%87cielab%E8%89%B2%E5%BD%A9%E7%A9%BA%E9%96%93%E8%BD%89%E6%8F%9B/
+	var lab = [0,0,0];
+	var xyz = [0,0,0];
+	//rgb to xyz
+	xyz[0] = 0.412453*r+0.357580*g+0.180423*b;
+	xyz[1] = 0.212671*r+0.715160*g+0.072169*b;
+	xyz[2] = 0.019334*r+0.119193*g+0.950227*b;
+	for(var i=0; i < 3; i++){
+		xyz[i]/=255;
+	}
+	//xyz to lab
+	function f(val){
+		return (val>0.008856)? Math.pow(val,1/3):(7.787*val+16/116);
+	}
+	lab[0] = (xyz[1]>0.008856)? (116*Math.pow(xyz[1],1/3)-16):(903.3*xyz[1]);
+	lab[1] = 500*(f(xyz[0]/0.9515)-f(xyz[1]));
+	lab[2] = 200*(f(xyz[1])-f(xyz[2]/1.0886));
+	return lab;
+}
+</script>
+<script type="text/javascript">
+//imgData.data => array of the real pixel val of the image: size is image size * 4(rgba)
+var imgData;
+var img;
+var canvas;
+var ctx;
+var w, h;
+var finalStr2Copy = '';
+function selectFile() {
+	var file = document.getElementById('myFile').files[0];
+	var reader = new FileReader();
+	reader.onloadend = function() {
+		img.src = reader.result;
+		img.onload = mainFunction;
+	};
+	if(file) {
+		reader.readAsDataURL(file); //reads the data as a URL
+    }
+	else {
+		img.src = '';
+    }
+}
+function mainFunction()
+{
+	//get the pixel data
+	canvas.width = document.getElementById('numRow').value;
+	canvas.height = document.getElementById('numCol').value;
+	ctx = canvas.getContext('2d');
+	ctx.drawImage(img,0,0,canvas.width,canvas.height);
+	try{
+		imgData = ctx.getImageData(0, 0, canvas.width,canvas.height);
+	}catch(err){
+		alert(err.message+"\n failed to get image data, abort operation");
+		return;
+	}
+	var srcTxt = document.getElementById('usingText').value;
+	if(srcTxt.length <= 0)
+	{
+		alert("Error: source text is empty.");
+		return;
+	}
+	
+	var finalStr = '';
+	w = canvas.width;
+	h = canvas.height;
+	var R,G,B;
+	var step = 1.0/srcTxt.length;
+	for(let i = 0; i < h; i++){
+		for(let j = 0; j < w; j++){
+			R = imgData.data[4*(i*w+j)];
+			G = imgData.data[4*(i*w+j)+1];
+			B = imgData.data[4*(i*w+j)+2];
+			//luminance
+			let L = RGB2LAB(R,G,B)[0]/100;
+			let ind = Math.floor(L/step);
+			if(ind >= srcTxt.length)
+			{
+				ind = srcTxt.length-1;
+			}
+			finalStr += srcTxt.charAt(ind);
+			finalStr2Copy += srcTxt.charAt(ind);
+		}
+		//console.log(finalStrOneLine);
+		if(i!=h-1){
+			finalStr += '<br>';
+			finalStr2Copy += '\n';
+		}
+	}
+	document.getElementById('result').innerHTML = finalStr;
+}
+//init elements
+function start()
+{
+	canvas = document.getElementById('modImageCanvas');
+	img = document.getElementById('image');
+	img.src = '';
+	var dropArea = document.getElementById('content-containter');
+	var dropArea2 = document.getElementById('uploadbtn');
+	['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+	  dropArea.addEventListener(eventName, preventDefaults, false);
+	  dropArea2.addEventListener(eventName, preventDefaults, false);
+	});
+	['dragenter', 'dragover'].forEach(eventName => {
+	  dropArea.addEventListener(eventName, highlight, false);
+	  dropArea2.addEventListener(eventName, highlight2, false);
+	});
+	['dragleave', 'drop'].forEach(eventName => {
+	  dropArea.addEventListener(eventName, unhighlight, false);
+	  dropArea2.addEventListener(eventName, unhighlight, false);
+	});
+	function preventDefaults (e) {
+	  e.preventDefault()
+	  e.stopPropagation()
+	}
+	function highlight(e) {
+	  dropArea.classList.add('highlight');
+	}
+	function highlight2(e) {
+	  dropArea2.classList.add('highlight');
+	}
+	function unhighlight(e) {
+	  dropArea.classList.remove('highlight');
+	  dropArea2.classList.remove('highlight');
+	}
+	dropArea.addEventListener('drop', handleDrop, false);
+	dropArea2.addEventListener('drop', handleDrop, false);
+}
+function handleDrop(e) {
+  let dt = e.dataTransfer;
+  let files = dt.files;
+  document.getElementById('myFile').files = files;
+  selectFile();
+}
+function copyText(){
+	if(finalStr2Copy.length<=0)
+	{
+		alert("沒東西可以複製啦，先試著放張圖唄");
+		return;
+	}
+	let txtEle = document.getElementById('TxtToCopy');
+	txtEle.value = finalStr2Copy;
+	txtEle.select();
+	document.execCommand('copy');
+	alert("幫你複製好文字囉＞＜");
+}
+function changeFontSize()
+{
+	document.getElementById('result').style.fontSize = ''+document.getElementById('fontsize').value+'pt';
+}
+</script>
+</head>
+<body onload="start()" style="text-align: center;">
+	<h1><img src="favicon.png" style="height: 32px; margin-right: 10px;">純文字の藝術師.html</h1>
+	<h3>把你的圖變成最潮最炫炮，技術宅最愛ㄉASCII Art！</h3>
+	<label class="btn" id="uploadbtn">
+		<input type="file" id="myFile" multiple accept="image/*" style="display:none;" onchange="selectFile()"></input>
+		把圖拖拉到這裡，或是按這邊從你的電腦選一張圖
+	</label>
+	<div style="margin: 5px;">寬要幾個字：<input type="number" id="numRow" value="64" style="display:inline-block; width: 50px;" onchange="mainFunction()"></input>
+	 高要幾個字：<input type="number" id="numCol" value="32" style="display:inline-block; width: 50px;" onchange="mainFunction()"></input></div>
+	<div style="margin: 5px; margin-bottom: 1px;">使用的字元庫（從最暗到最亮排列）：<input type="text" id="usingText" value="███▓▓▒▒░░ " style="display:inline-block; font-size: 16pt;" onchange="mainFunction()"></input></div>
+	<p style="margin: 1px; margin-bottom: 5px; font-size: 10pt; color:#7DB9DE;">小捲の小撇步：使用「全形字」可以確保排版不會亂掉唷<br>如果不用全形字的話，複製到其他地方一定要記得用「等寬字體 (monospace font)」來顯示才會正常！<br>另外，如果覺得出來結果太淺／太深，可以在字元庫前面／後面多加幾個一樣的字，整體就會再變深／淺囉</p>
+	<div style="margin: 0px; font-size: 10pt;">顯示字體大小：<input type="number" id="fontsize" min="8" value="10" style="text-align: right; display:inline-block; width: 50px;" onchange="changeFontSize()">pt</input>
+	</div>
+	<div style="display:block;">
+		<div id="content-containter" style="display:inline-block;" >
+			<div id="image-container" >
+				<img id="image" src="" style="display:none;">
+				<canvas id="modImageCanvas" style="display:none;"></canvas>
+				<!-- img for input, canvas for the real pixel stuff and display -->
+				<p id="result" style="font-family: monospace; white-space:pre; display: inline-block; margin: 0px; font-size: 10pt;">選擇圖片後，結果會顯示在這裡！<br>也可以把圖片拖拉到這裡唷</p>
+			</div>
+		</div>
+	</div>
+	
+	<button class="btn" onclick="copyText()" style=" margin-bottom: 50px;">複製做好的內容文字</button>
+	<textarea id="TxtToCopy" style="width: 1px; height: 1px; position: fixed; left: 100%; bottom: 0;"></textarea>
+	<div style="display:block; font-size: 10pt; position: fixed; bottom: 0; width: 100%; background-color: rgba(50,50,50,0.85); padding-top: 5px; padding-bottom: 5px;">所有內容皆在您的本機計算，我也不會收到任何您的資料，請放心使用<br>Made by <a href="http://xquid.work/" style="color: #3A8FB7;">Xquid</a>, 2019</div>
+</body>
+</html>
