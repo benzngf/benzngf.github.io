@@ -87,14 +87,27 @@ function mainFunction()
 	h = canvas.height;
 	var R,G,B;
 	var step = 1.0/srcTxt.length;
+	var L = [];
+	LMin = 1;
+	LMax = 0;
 	for(let i = 0; i < h; i++){
 		for(let j = 0; j < w; j++){
 			R = imgData.data[4*(i*w+j)];
 			G = imgData.data[4*(i*w+j)+1];
 			B = imgData.data[4*(i*w+j)+2];
 			//luminance
-			let L = RGB2LAB(R,G,B)[0]/100;
-			let ind = Math.floor(L/step);
+			let tmpL = RGB2LAB(R,G,B)[0]/100;
+			L.push(tmpL);
+			if(tmpL<LMin) LMin = tmpL;
+			if(tmpL>LMax) LMax = tmpL;
+		}
+	}
+	for(let i = 0; i < h; i++){
+		for(let j = 0; j < w; j++){
+			//luminance
+			let tmpL = L[i*w+j];
+			if(LMax-LMin>0) tmpL = (tmpL-LMin)/(LMax-LMin);
+			let ind = Math.floor(tmpL/step);
 			if(ind >= srcTxt.length)
 			{
 				ind = srcTxt.length-1;
@@ -180,7 +193,7 @@ function changeFontSize()
 	</label>
 	<div style="margin: 5px;">寬要幾個字：<input type="number" id="numRow" value="64" style="display:inline-block; width: 50px;" onchange="mainFunction()"></input>
 	 高要幾個字：<input type="number" id="numCol" value="32" style="display:inline-block; width: 50px;" onchange="mainFunction()"></input></div>
-	<div style="margin: 5px; margin-bottom: 1px;">使用的字元庫（從最暗到最亮排列）：<input type="text" id="usingText" value="███▓▓▒▒░░ " style="display:inline-block; font-size: 16pt;" onchange="mainFunction()"></input></div>
+	<div style="margin: 5px; margin-bottom: 1px;">使用的字元庫（從最暗到最亮排列）：<input type="text" id="usingText" value="█▓▒░ " style="display:inline-block; font-size: 16pt;" onchange="mainFunction()"></input></div>
 	<p style="margin: 1px; margin-bottom: 5px; font-size: 10pt; color:#7DB9DE;">小捲の小撇步：使用「全形字」可以確保排版不會亂掉唷<br>如果不用全形字的話，複製到其他地方一定要記得用「等寬字體 (monospace font)」來顯示才會正常！<br>另外，如果覺得出來結果太淺／太深，可以在字元庫前面／後面多加幾個一樣的字，整體就會再變深／淺囉</p>
 	<div style="margin: 0px; font-size: 10pt;">顯示字體大小：<input type="number" id="fontsize" min="8" value="10" style="text-align: right; display:inline-block; width: 50px;" onchange="changeFontSize()">pt</input>
 	</div>
