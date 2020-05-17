@@ -1,0 +1,14 @@
+.acnhlinkbtn
+{
+    width: 64px;
+    background-color: rgb(255, 241, 177);
+    border-radius: 16px;
+    border: solid 10px rgb(255, 241, 177);
+    padding: 10px;
+    display: inline-block;
+    margin: 5px;
+}
+.acnhlinkbtn:hover
+{
+    background-color: rgb(255, 209, 58);
+}
