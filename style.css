@@ -179,10 +179,12 @@ li{margin-bottom: 5pt;}
 #mylogo{
     position: absolute;
     margin: 0px auto;
-    height:36%;
-    padding: 10%;
+    height:36vh;
+    width:36vh;
+    padding: 10vw;
     left:50%;
     top:40%;
+    text-align: center;
     -webkit-transform-origin: 50%, 50% 0px; /* Chrome, Safari, Opera */
     -ms-transform-origin: 50%, 50% 0px; /* IE 9 */
     transform-origin: 50% 50% 0px;
@@ -191,6 +193,7 @@ li{margin-bottom: 5pt;}
     transform: translate(-50%, -50%);
 }
 #mylogoImg{
+    margin:0;
     -webkit-transform-origin: 50%, 50% 0px; /* Chrome, Safari, Opera */
     -ms-transform-origin: 50%, 50% 0px; /* IE 9 */
     transform-origin: 50% 50% 0px;
@@ -212,7 +215,7 @@ li{margin-bottom: 5pt;}
 }
 .linkbtn{
     position: absolute;
-    margin: 0px auto;
+    margin: 0;
     height:12%;
     width:12%;
     left:50%;
