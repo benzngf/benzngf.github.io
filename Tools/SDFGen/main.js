@@ -18,7 +18,6 @@ var baseTuple = 0;
 //preview
 var c_preview, gl_preview;
 
-
 function lerp(value1, value2, amount)
 {
 	amount = amount < 0 ? 0 : amount;
@@ -44,7 +43,7 @@ function addToTuple(value)
 			tuples[i].count += 1;
 			tuples[i].avg = tuples[i].sum / tuples[i].count;
 			tuples[i].min = tuples[i].min>value? value:tuples[i].min;
-			tuples[i].max = tuples[i].max>value? value:tuples[i].max;
+			tuples[i].max = tuples[i].max<value? value:tuples[i].max;
 			break;
 		}
 	}
@@ -68,7 +67,7 @@ function startSdfWorker()
 		var finished = false;
 		for(var i = 0; i < 10; i++)
 		{
-			finished = sdfWorkerStep()
+			finished = sdfWorkerStep();
 			if(finished)
 			{
 				if(pendingDraw)
@@ -87,7 +86,7 @@ function sdfWorkerStep()
 {	
 	//generate distance field for each steps
 	var t = workerVar.t;
-	if(workerVar.t >= tuples.length)
+	if(t >= tuples.length)
 	{
 		outputTxt.innerText = "";
 		return true;
@@ -129,7 +128,7 @@ function sdfWorkerStep()
 	if(!hasUnfound)
 	{
 		workerVar.step = 1;
-		workerVar.t = workerVar.t + 1;
+		workerVar.t = t + 1;
 	}
 	else
 	{
@@ -199,7 +198,6 @@ function drawProcessedImage()
 					}
 					break;
 				}
-
 			}
 		}
 	}
