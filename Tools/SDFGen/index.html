@@ -28,13 +28,24 @@
 		把圖拖拉到這裡，或是按這邊從你的電腦選一張圖
 	</label>
 	<div style="display:block;">
-		<div id="content-containter" style="display:inline-block; z-index: 100;" >
-			<div id="image-container" >
+		<div id="img-importer" class="content-containter" style="display:inline-block; z-index: 100;" >
+			<div class="image-container" >
+				<h2>原始圖片</h2>
+				<img id="image" src="">
+			</div>
+		</div>
+		<div class="content-containter" style="display:inline-block; z-index: 100;" >
+			
+			<div class="image-container" >
+				<h2>SDF</h2>
 				<p id="output"></p>
-				<img id="image" src="" style="display:none;">
 				<canvas id="modImageCanvas"></canvas>
+			</div>
+		</div>
+		<div class="content-containter" style="display:inline-block; z-index: 100;" >
+			<div class="image-container" >
+				<h2>效果預覽</h2>
 				<canvas id="previewCanvas"></canvas>
-				<!-- img for input, canvas for the real pixel stuff and display -->
 			</div>
 		</div>
 	</div>
@@ -47,6 +58,7 @@
 				<input type="range" min="0" max="255" value="128" class="slider" id="previewThresSlider">
 			</div>
 		</div>
+	<!--
 		<div>
 			<div style="display:inline-block; width: 150px; text-align: right;">
 				極值距離
@@ -63,6 +75,7 @@
 				
 			</div>
 		</div>
+	-->
 	</div>
 	<div style="display:block;height:100px;"></div>
 	<div style="display:block; font-size: 10pt; position: fixed; bottom: 0; width: 100%; background-color: rgba(50,50,50,0.85); padding-top: 5px; padding-bottom: 5px;">所有內容皆在您的本機計算，我也不會收到任何您的資料，請放心使用<br>Made by <a href="http://xquid.work/" style="color: #3A8FB7;">Xquid</a>, 2022</div>

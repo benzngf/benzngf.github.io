@@ -35,7 +35,13 @@ body
 	padding: 0;
 	margin: 0;
 }
-#content-containter
+#img-importer.highlight
+{
+	background-color: #FFF;
+	transform: scale(1.1,1.1);
+}
+
+.content-containter
 {
 	background-color: #F0F0F0;
 	border-width: 5px;
@@ -47,11 +53,7 @@ body
 	padding: 10px;
 	transition-duration: 0.2s;
 }
-#content-containter.highlight
-{
-	background-color: #FFF;
-	transform: scale(1.1,1.1);
-}
+
 input
 {
 	border-radius: 5px;

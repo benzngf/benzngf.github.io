@@ -7,14 +7,21 @@ var imgData;
 //dom element for output debug txt
 var outputTxt;
 //var for storing all processed datas
-var tuples;
+var sdfs;
 var pendingDraw = false;
 //const
 var neighbors = [[0,-1],[-1,0],[1,0],[0,1],[-1,-1],[1,-1],[-1,1],[1,1]];
+var neighbors_P = [[-1,0],[-1,-1],[0,-1],[1,-1]];
+var neighbors_N = [[1,0],[1,1],[0,1],[-1,1]];
 //parameters
-var threshold = 20;
-var extremeDist = 50;
-var baseTuple = 0;
+var posterizeStep = 6;
+var posterizeStepSize = 255/(posterizeStep-1);
+
+//TODO:
+// 1. 一次跳>1個step時的處理
+// 2. Local minimum/maximum 處理
+
+
 //preview
 var c_preview, gl_preview;
 
@@ -30,43 +37,22 @@ function ind2d(x,y)
 	x = x>=0? (x<w? x:(w-1)):0;
 	return y * w + x;
 }
-function len(a){return Math.sqrt(a[0]*a[0]+a[1]*a[1]);}
-function addToTuple(value)
+function outOfBounds(x,y)
 {
-	var hasTuple = false;
-	for(var i = 0; i < tuples.length; i++)
-	{
-		if(Math.abs(value - tuples[i].avg) < threshold)
-		{
-			hasTuple = true;
-			tuples[i].sum += value;
-			tuples[i].count += 1;
-			tuples[i].avg = tuples[i].sum / tuples[i].count;
-			tuples[i].min = tuples[i].min>value? value:tuples[i].min;
-			tuples[i].max = tuples[i].max<value? value:tuples[i].max;
-			break;
-		}
-	}
-	if(!hasTuple)
-	{
-		//new tuple
-		var tmp = {};
-		tmp.sum = value;
-		tmp.count = 1;
-		tmp.avg = value;
-		tmp.min = value;
-		tmp.max = value;
-		tuples.push(tmp);
-	}
+	return !(x >= 0 && x < w && y >= 0 && y < h);
 }
+
+function len(a){return Math.sqrt(sqrlen(a));}
+function sqrlen(a){return a[0]*a[0]+a[1]*a[1];}
 function startSdfWorker()
 {
-	workerVar = {t:0, step:1};
+	workerVar = {t:0,step:0};
 	function batchStep()
 	{
 		var finished = false;
 		for(var i = 0; i < 10; i++)
 		{
+			workerVar.step++;
 			finished = sdfWorkerStep();
 			if(finished)
 			{
@@ -86,54 +72,71 @@ function sdfWorkerStep()
 {	
 	//generate distance field for each steps
 	var t = workerVar.t;
-	if(t >= tuples.length)
+	if(t >= sdfs.length)
 	{
 		outputTxt.innerText = "";
 		return true;
 		//finished
 	}
-	var hasUnfound = false;
-	var step = workerVar.step;
-	outputTxt.innerText = "正在處理...  （" + step + "）（" + Math.round(t*100/tuples.length) + "%）";
+	outputTxt.innerText = "正在處理...  （" + workerVar.step + "）（" + Math.round(t*100/sdfs.length) + "%）";
+	if(sdfs[t] == null)
+	{
+		//this is a bad sdf step, simply skip it
+		workerVar.t++;
+		return false;
+	}
 	for(var j = 0; j < h; j++)
 	{
 		for(var i = 0; i < w; i++)
 		{
-			if(tuples[t].dists[ind2d(i,j)] === null) //undetermined distance
+			var ind = ind2d(i,j);
+			var curD = -1;
+			if(sdfs[t].dist[ind] != null)
 			{
-				var found = false;
-				var minDist = -1;
-				//search 8 neighbors
-				for(var n = 0; n < 8; n++)
+				curD = sqrlen(sdfs[t].dist[ind]);
+			}
+			for(var n = 0; n < 4; n++)
+			{
+				if(outOfBounds(i + neighbors_P[n][0], j + neighbors_P[n][1])) continue;
+				var cmp_ind = ind2d(i + neighbors_P[n][0],j + neighbors_P[n][1]);
+				if(sdfs[t].dist[cmp_ind] == null) continue;
+				var candidate = [sdfs[t].dist[cmp_ind][0] + neighbors_P[n][0], sdfs[t].dist[cmp_ind][1] + neighbors_P[n][1]];
+				var d = sqrlen(candidate);
+				if(curD < 0 || d < curD)
 				{
-					var ind = ind2d(i+neighbors[n][0],j+neighbors[n][1]);
-					
-					if(tuples[t].dists[ind] !== null && Math.abs(tuples[t].dists[ind][0]) < step && Math.abs(tuples[t].dists[ind][1]) < step)
-					{
-						var candidate = [tuples[t].dists[ind][0] + neighbors[n][0],tuples[t].dists[ind][1] + neighbors[n][1]];
-						var d = len(candidate);
-						if(minDist < 0 || d < minDist)
-						{
-							minDist = d;
-							tuples[t].dists[ind2d(i,j)] = candidate;
-							found = true;
-						}
-					}
+					curD = d;
+					sdfs[t].dist[ind]= candidate;
 				}
-				if(!found) hasUnfound = true;
 			}
 		}
 	}
-	step++;
-	if(!hasUnfound)
+	for(var j = h-1; j >= 0; j--)
 	{
-		workerVar.step = 1;
-		workerVar.t = t + 1;
+		for(var i = w-1; i >= 0; i--)
+		{
+			var ind = ind2d(i,j);
+			var curD = -1;
+			if(sdfs[t].dist[ind] != null)
+			{
+				curD = sqrlen(sdfs[t].dist[ind]);
+			}
+			for(var n = 0; n < 4; n++)
+			{
+				if(outOfBounds(i + neighbors_N[n][0],j + neighbors_N[n][1])) continue;
+				var cmp_ind = ind2d(i + neighbors_N[n][0],j + neighbors_N[n][1]);
+				if(sdfs[t].dist[cmp_ind] == null) continue;
+				var candidate = [sdfs[t].dist[cmp_ind][0] + neighbors_N[n][0], sdfs[t].dist[cmp_ind][1] + neighbors_N[n][1]];
+				var d = sqrlen(candidate);
+				if(curD < 0 || d < curD)
+				{
+					curD = d;
+					sdfs[t].dist[ind]= candidate;
+				}
+			}
+		}
 	}
-	else
-	{
-		workerVar.step = step;
-	}
+	workerVar.t++;
+	//unfinished
 	return false;
 }
 function drawProcessedImage()
@@ -144,95 +147,151 @@ function drawProcessedImage()
 		for(var i = 0; i < w; i++)
 		{
 			var ind = ind2d(i,j);
-			for(var t = 0; t < tuples.length; t++)
+			imgData.data[ind*4+3] = 255;
+			var outId = null;
+			var inId = null;
+			//check value to find outside
+			for(var t = 0; t < sdfs.length; t++)
 			{
-				if(len(tuples[t].dists[ind])<1)
+				if(sdfs[t] == null) continue;
+				if(sdfs[t].val[ind])
 				{
-					imgData.data[ind*4+3] = 255;
-					if(t==baseTuple)
-					{
-						var val = tuples[t].avg;
-						imgData.data[ind*4] = val;
-						imgData.data[ind*4+1] = val;
-						imgData.data[ind*4+2] = val;
-					}
-					else
-					{
-						//t+1 and t-1
-						var tA = t-1>=0? t-1:t;
-						var tB = t+1<tuples.length? t+1:t;
-						var distA = len(tuples[tA].dists[ind]);
-						var distB = len(tuples[tB].dists[ind]);
-						if(distA >= 1 && distB >= 1)
-						{
-							var val;
-							if(t>baseTuple)
-							{
-								val = lerp(tuples[t-1].avg,tuples[t].avg,distA/(distA+distB));
-							}
-							else
-							{
-								val = lerp(tuples[t+1].avg,tuples[t].avg,distA/(distA+distB));
-							}
-							imgData.data[ind*4] = val;
-							imgData.data[ind*4+1] = val;
-							imgData.data[ind*4+2] = val;
-						}
-						else
-						{
-							var val;
-							distA = (distA>distB? distA:distB) / extremeDist;
-							if(distA>1) distA = 1;
-							if(t>baseTuple)
-							{
-								val = lerp(tuples[t-1].avg,tuples[t].avg,distA);
-							}
-							else
-							{
-								val = lerp(tuples[t+1].avg,tuples[t].avg,distA);
-							}
-							imgData.data[ind*4] = val;
-							imgData.data[ind*4+1] = val;
-							imgData.data[ind*4+2] = val;
-						}
-					}
-					break;
+					inId = t;
 				}
+				else
+				{
+					if(outId == null)
+					{
+						outId = t;
+					}
+					else if(len(sdfs[outId].dist[ind]) >= len(sdfs[t].dist[ind]))
+					{
+						outId = t;
+					}
+				}
+			}
+			if(inId != null && outId != null)
+			{
+				var inDist = len(sdfs[inId].dist[ind]);
+				var outDist = len(sdfs[outId].dist[ind]);
+				val = lerp(sdfs[inId].avg, sdfs[outId].avg, inDist/(inDist+outDist));
+				imgData.data[ind*4] = val;
+				imgData.data[ind*4+1] = val;
+				imgData.data[ind*4+2] = val;
+			}
+			else if(inId != null)
+			{
+				val = sdfs[inId].avg;
+				imgData.data[ind*4] = val;
+				imgData.data[ind*4+1] = val;
+				imgData.data[ind*4+2] = val;
+			}
+			else if(outId != null)
+			{
+				val = lerp(sdfs[outId].avg, sdfs[outId].avg-posterizeStepSize, len(sdfs[outId].dist[ind]) / 64);
+				val = val < 0? 0 : val;
+				imgData.data[ind*4] = val;
+				imgData.data[ind*4+1] = val;
+				imgData.data[ind*4+2] = val;
+			}
+			else
+			{
+				//error
+				imgData.data[ind*4] = 255;
+				imgData.data[ind*4+1] = 0;
+				imgData.data[ind*4+2] = 255;
 			}
 		}
 	}
 	ctx.putImageData(imgData, 0, 0);
 	pendingDraw = false;
 }
-function processImage()
+
+function debugDrawSDF(id)
 {
-	//1. determine image steps
-	tuples = [];	
+	//put back value
 	for(var j = 0; j < h; j++)
 	{
 		for(var i = 0; i < w; i++)
 		{
-			addToTuple(imgData.data[ind2d(i,j)*4]);
+			var ind = ind2d(i,j);
+			imgData.data[ind*4+3] = 255;
+			if(sdfs[id].val[ind])
+			{
+				imgData.data[ind*4+0] = len(sdfs[id].dist[ind]);
+				imgData.data[ind*4+1] = 0;
+				imgData.data[ind*4+2] = 0;
+			}
+			else
+			{
+				imgData.data[ind*4+0] = 0;
+				imgData.data[ind*4+1] = len(sdfs[id].dist[ind]);
+				imgData.data[ind*4+2] = 0;
+			}
 		}
 	}
-	tuples.sort((a,b)=>{return a.avg - b.avg;});
-	//init disance field for each steps
-	for(var t = 0; t < tuples.length; t++)
+	ctx.putImageData(imgData, 0, 0);
+}
+
+function processImage()
+{
+	//1. determine image steps
+	sdfs = [];
+	for(var k = 0; k < posterizeStep; k++)
 	{
-		tuples[t].dists = [];
+		var hasTrue = false, hasFalse = false;
+		var r = [-posterizeStepSize/2 + k*posterizeStepSize];
+		r[1] = r[0] + posterizeStepSize;
+		sdfs.push({val:[],range:r,dist:[],avg:(r[0]+r[1])/2});
 		for(var j = 0; j < h; j++)
 		{
 			for(var i = 0; i < w; i++)
 			{
-				var tmp = imgData.data[ind2d(i,j)*4];
-				//store distance [x,y] for better accuracy
-				tuples[t].dists.push((tmp>=tuples[t].min&&tmp<=tuples[t].max)? [0,0]:null);
+				var rawVal = imgData.data[ind2d(i,j)*4];
+				if(rawVal >= sdfs[k].range[0])
+				{
+					sdfs[k].val.push(true);
+					hasTrue = true;
+				}
+				else
+				{
+					sdfs[k].val.push(false);
+					hasFalse = true;
+				}
+				sdfs[k].dist.push(null);
+			}
+		}
+		if(!(hasTrue && hasFalse))
+		{
+			//bad image, can never generate sdfs, discard it
+			sdfs[k] = null;
+		}
+		else
+		{
+			//initialize first sdfs by comparing values
+			for(var j = 0; j < h; j++)
+			{
+				for(var i = 0; i < w; i++)
+				{
+					var bInd = ind2d(i,j);
+					var val = sdfs[k].val[bInd];
+					for(var n = 0; n < 8; n++)
+					{
+						var ind = ind2d(i+neighbors[n][0],j+neighbors[n][1]);
+						if(sdfs[k].val[ind] != val)
+						{
+							sdfs[k].dist[bInd] = neighbors[n];
+							break;
+						}
+					}
+				}
 			}
 		}
 	}
 	pendingDraw = true;
 	startSdfWorker();
 }
+
 function mainFunction()
 {
 	c_preview = document.getElementById("previewCanvas");
@@ -289,7 +348,7 @@ function start()
 	canvas = document.getElementById('modImageCanvas');
 	img = document.getElementById('image');
 	img.src = '';
-	var dropArea = document.getElementById('content-containter');
+	var dropArea = document.getElementById('img-importer');
 	var dropArea2 = document.getElementById('uploadbtn');
 	['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
 	  dropArea.addEventListener(eventName, preventDefaults, false);
