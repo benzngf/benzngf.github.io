@@ -15,8 +15,11 @@ var neighbors_P = [[-1,0],[-1,-1],[0,-1],[1,-1]];
 var neighbors_N = [[1,0],[1,1],[0,1],[-1,1]];
 //parameters
 var posterizeStep = 6;
-var posterizeStepSize = 255/(posterizeStep-1);
+var posterizeStepSize;
 
+//parameter DOM
+var previewThresSlider;
+var stepSlider;
 //TODO:
 // 1. 一次跳>1個step時的處理
 // 2. Local minimum/maximum 處理
@@ -46,13 +49,12 @@ function len(a){return Math.sqrt(sqrlen(a));}
 function sqrlen(a){return a[0]*a[0]+a[1]*a[1];}
 function startSdfWorker()
 {
-	workerVar = {t:0,step:0};
+	workerVar = {t:0};
 	function batchStep()
 	{
 		var finished = false;
 		for(var i = 0; i < 10; i++)
 		{
-			workerVar.step++;
 			finished = sdfWorkerStep();
 			if(finished)
 			{
@@ -78,7 +80,7 @@ function sdfWorkerStep()
 		return true;
 		//finished
 	}
-	outputTxt.innerText = "正在處理...  （" + workerVar.step + "）（" + Math.round(t*100/sdfs.length) + "%）";
+	outputTxt.innerText = "正在處理... （" + Math.round(t*100/sdfs.length) + "%）";
 	if(sdfs[t] == null)
 	{
 		//this is a bad sdf step, simply skip it
@@ -164,10 +166,6 @@ function drawProcessedImage()
 					{
 						outId = t;
 					}
-					else if(len(sdfs[outId].dist[ind]) >= len(sdfs[t].dist[ind]))
-					{
-						outId = t;
-					}
 				}
 			}
 			if(inId != null && outId != null)
@@ -188,7 +186,26 @@ function drawProcessedImage()
 			}
 			else if(outId != null)
 			{
-				val = lerp(sdfs[outId].avg, sdfs[outId].avg-posterizeStepSize, len(sdfs[outId].dist[ind]) / 64);
+				if(sdfs[outId].maxOut === undefined)
+				{
+					sdfs[outId].maxOut = 1;
+					for(var sdfj = 0; sdfj < h; sdfj++)
+					{
+						for(var sdfi = 0; sdfi < w; sdfi++)
+						{
+							if(!sdfs[outId].val[ind2d(sdfi,sdfj)])
+							{
+								var d = len(sdfs[outId].dist[ind2d(sdfi,sdfj)]);
+								if(d > sdfs[outId].maxOut)
+								{
+									sdfs[outId].maxOut = d;
+								}
+							}
+						}
+					}
+					console.log(sdfs[outId].maxOut);
+				}
+				val = lerp(sdfs[outId].avg, sdfs[outId].avg-posterizeStepSize, len(sdfs[outId].dist[ind]) / sdfs[outId].maxOut);
 				val = val < 0? 0 : val;
 				imgData.data[ind*4] = val;
 				imgData.data[ind*4+1] = val;
@@ -204,6 +221,7 @@ function drawProcessedImage()
 		}
 	}
 	ctx.putImageData(imgData, 0, 0);
+	refreshPreview();
 	pendingDraw = false;
 }
 
@@ -235,6 +253,7 @@ function debugDrawSDF(id)
 
 function processImage()
 {
+	posterizeStepSize = 255/(posterizeStep-1);
 	//1. determine image steps
 	sdfs = [];
 	for(var k = 0; k < posterizeStep; k++)
@@ -299,12 +318,9 @@ function mainFunction()
 	c_preview.height = img.height;
 	gl_preview = c_preview.getContext('webgl', { premultipliedAlpha: false, preserveDrawingBuffer: true });
 	pgm_preview = mApp.glCreateProgram(gl_preview, sharedVertSource, baseFragSource);
-	var previewThresSlider = document.getElementById("previewThresSlider");
-	previewThresSlider.oninput = function() {
-		mApp.previewThreshold = this.value;
-		refreshPreview();
-	}
-
+	previewThresSlider = document.getElementById("previewThresSlider");
+	previewThresSlider.oninput = refreshPreview;
+	
 	//get the pixel data
 	canvas.width = img.width;
 	canvas.height = img.height;
@@ -323,6 +339,7 @@ function mainFunction()
 }
 function refreshPreview()
 {
+	mApp.previewThreshold = previewThresSlider.value;
 	mApp.glBindTextures(gl_preview, pgm_preview,
 		["u_image"], [canvas]);
 	mApp.drawFullscreenQuad(gl_preview, pgm_preview);
@@ -378,6 +395,27 @@ function start()
 	}
 	dropArea.addEventListener('drop', handleDrop, false);
 	dropArea2.addEventListener('drop', handleDrop, false);
+	stepSlider = document.getElementById("stepSlider");
+	var confirmStepBtn = document.getElementById("confirmStepBtn");
+	confirmStepBtn.onclick = ()=>
+	{
+		if(stepSlider.value != posterizeStep)
+		{
+			posterizeStep = stepSlider.value;
+			if(img.src !== '')
+			{
+				mainFunction();
+			}
+		}
+	};
+	var resetStepBtn = document.getElementById("resetStepBtn");
+	resetStepBtn.onclick = ()=>
+	{
+		if(stepSlider.value != posterizeStep)
+		{
+			stepSlider.value = posterizeStep;
+		}
+	};
 }
 function handleDrop(e) {
   let dt = e.dataTransfer;

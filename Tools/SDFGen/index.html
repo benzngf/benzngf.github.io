@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <title>SDF產生器</title>
-<meta name="description" content="Web Browser is better than Photoshop" />
+<meta name="description" content="目標是產生好看的過渡形狀٩(ˊᗜˋ*)و" />
 <meta property="og:title" content="SDF產生器" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="http://www.xquid.work/Tools/SDFGen" />
 <meta property="og:site_name" content="SDF產生器" />
-<meta property="og:description" content="Web Browser is better than Photoshop" />
+<meta property="og:description" content="目標是產生好看的過渡形狀٩(ˊᗜˋ*)و" />
 <meta property="twitter:title" content="SDF產生器" />
-<meta property="twitter:description" content="Web Browser is better than Photoshop" />
+<meta property="twitter:description" content="目標是產生好看的過渡形狀٩(ˊᗜˋ*)و" />
 <link href="favicon.png" rel="shortcut icon">
 <link href="favicon.png" rel="icon">
 <link rel="stylesheet" href="style.css">
@@ -28,28 +28,39 @@
 		把圖拖拉到這裡，或是按這邊從你的電腦選一張圖
 	</label>
 	<div style="display:block;">
-		<div id="img-importer" class="content-containter" style="display:inline-block; z-index: 100;" >
-			<div class="image-container" >
+		<div id="img-importer" class="content-containter" style="display:inline-block; z-index: 100; max-width: 100%;" >
+			<div class="image-container" style="max-width: 100%;">
 				<h2>原始圖片</h2>
-				<img id="image" src="">
+				<img id="image" src="" style="max-width: 100%;">
 			</div>
 		</div>
-		<div class="content-containter" style="display:inline-block; z-index: 100;" >
-			
-			<div class="image-container" >
+		<div class="content-containter" style="display:inline-block; z-index: 100; max-width: 100%;" >
+			<div class="image-container" style="max-width: 100%;">
 				<h2>SDF</h2>
 				<p id="output"></p>
-				<canvas id="modImageCanvas"></canvas>
+				<canvas id="modImageCanvas" style="max-width: 100%;"></canvas>
 			</div>
 		</div>
-		<div class="content-containter" style="display:inline-block; z-index: 100;" >
-			<div class="image-container" >
-				<h2>效果預覽</h2>
-				<canvas id="previewCanvas"></canvas>
+		<div class="content-containter" style="display:inline-block; z-index: 100; max-width: 100%;" >
+			<div class="image-container" style="max-width: 100%;">
+				<h2>效果預覽（按右鍵另存）</h2>
+				<canvas id="previewCanvas" style="max-width: 100%;"></canvas>
 			</div>
 		</div>
 	</div>
 	<div style="display:block;" id="previewParamBlock">
+		<div>
+			<div style="display:inline-block; width: 150px; text-align: right;">
+				分段數
+			</div>
+			<div style="display:inline-block; width: 60%; max-width: 64px;">
+				<input type="number" min="2" max="12" value="6" step="1" class="slider" id="stepSlider">
+			</div>
+			<div style="display:inline-block; width: 150px;">
+				<input type="button" value="OK" id="confirmStepBtn">
+				<input type="button" value="Reset" id="resetStepBtn">
+			</div>
+		</div>
 		<div>
 			<div style="display:inline-block; width: 150px; text-align: right;">
 				效果預覽
@@ -58,24 +69,6 @@
 				<input type="range" min="0" max="255" value="128" class="slider" id="previewThresSlider">
 			</div>
 		</div>
-	<!--
-		<div>
-			<div style="display:inline-block; width: 150px; text-align: right;">
-				極值距離
-			</div>
-			<div style="display:inline-block; width: 60%; max-width: 500px;">
-				<input type="range" min="0" max="255" value="128" class="slider" id="extremeDistSlider">
-			</div>
-		</div>
-		<div>
-			<div style="display:inline-block; width: 150px; text-align: right;">
-				基礎值
-			</div>
-			<div style="display:inline-block; width: 60%; max-width: 500px;">
-				
-			</div>
-		</div>
-	-->
 	</div>
 	<div style="display:block;height:100px;"></div>
 	<div style="display:block; font-size: 10pt; position: fixed; bottom: 0; width: 100%; background-color: rgba(50,50,50,0.85); padding-top: 5px; padding-bottom: 5px;">所有內容皆在您的本機計算，我也不會收到任何您的資料，請放心使用<br>Made by <a href="http://xquid.work/" style="color: #3A8FB7;">Xquid</a>, 2022</div>
