@@ -36,14 +36,14 @@
 		</div>
 		<div class="content-containter" style="display:inline-block; z-index: 100; max-width: 100%;" >
 			<div class="image-container" style="max-width: 100%;">
-				<h2>SDF</h2>
+				<h2>SDF（按右鍵另存）</h2>
 				<p id="output"></p>
 				<canvas id="modImageCanvas" style="max-width: 100%;"></canvas>
 			</div>
 		</div>
 		<div class="content-containter" style="display:inline-block; z-index: 100; max-width: 100%;" >
 			<div class="image-container" style="max-width: 100%;">
-				<h2>效果預覽（按右鍵另存）</h2>
+				<h2>效果預覽</h2>
 				<canvas id="previewCanvas" style="max-width: 100%;"></canvas>
 			</div>
 		</div>
@@ -51,7 +51,7 @@
 	<div style="display:block;" id="previewParamBlock">
 		<div>
 			<div style="display:inline-block; width: 150px; text-align: right;">
-				分段數
+				色段數
 			</div>
 			<div style="display:inline-block; width: 60%; max-width: 64px;">
 				<input type="number" min="2" max="12" value="6" step="1" class="slider" id="stepSlider">
@@ -59,6 +59,14 @@
 			<div style="display:inline-block; width: 150px;">
 				<input type="button" value="OK" id="confirmStepBtn">
 				<input type="button" value="Reset" id="resetStepBtn">
+			</div>
+		</div>
+		<div>
+			<div style="display:inline-block; width: 150px; text-align: right;">
+				基礎色段
+			</div>
+			<div style="display:inline-block; width: 60%; max-width: 64px;">
+				<input type="number" min="0" max="11" value="3" step="1" class="slider" id="baseStepSlider">
 			</div>
 		</div>
 		<div>

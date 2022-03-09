@@ -20,6 +20,7 @@ var posterizeStepSize;
 //parameter DOM
 var previewThresSlider;
 var stepSlider;
+var baseStepSlider;
 //TODO:
 // 1. 一次跳>1個step時的處理
 // 2. Local minimum/maximum 處理
@@ -143,6 +144,12 @@ function sdfWorkerStep()
 }
 function drawProcessedImage()
 {
+	//get base step
+	var baseStep = baseStepSlider.value;
+	if(baseStep >= sdfs.length)
+	{
+		baseStep = sdfs.length - 1;
+	}
 	//put back value
 	for(var j = 0; j < h; j++)
 	{
@@ -168,18 +175,81 @@ function drawProcessedImage()
 					}
 				}
 			}
+
+			var v0;
+			var v1;
+			if(inId != null && outId != null)
+			{
+				
+				v0 = sdfs[inId].avg;
+				v1 = sdfs[outId].avg;
+				if(inId > baseStep)
+				{
+					v0 -= posterizeStepSize;
+				}
+				if(outId > baseStep)
+				{
+					v1 -= posterizeStepSize;
+				}
+			}
+			else if(inId != null)
+			{
+				v0 = sdfs[inId].avg;
+				v1 = sdfs[inId].avg + posterizeStepSize;
+				if(inId > baseStep)
+				{
+					v0 -= posterizeStepSize;
+					v1 -= posterizeStepSize
+				}
+			}
+			else if(outId != null)
+			{
+				v0 = sdfs[outId].avg - posterizeStepSize;
+				v1 = sdfs[outId].avg;
+				if(outId > baseStep)
+				{
+					v0 -= posterizeStepSize;
+					v1 -= posterizeStepSize
+				}
+			}
+
 			if(inId != null && outId != null)
 			{
 				var inDist = len(sdfs[inId].dist[ind]);
 				var outDist = len(sdfs[outId].dist[ind]);
-				val = lerp(sdfs[inId].avg, sdfs[outId].avg, inDist/(inDist+outDist));
+				if(inDist+outDist <= 0)
+				{
+					val = (v0+v1)/2;
+				}
+				else
+				{
+					val = lerp(v0, v1, inDist/(inDist+outDist));
+				}
 				imgData.data[ind*4] = val;
 				imgData.data[ind*4+1] = val;
 				imgData.data[ind*4+2] = val;
 			}
 			else if(inId != null)
 			{
-				val = sdfs[inId].avg;
+				if(sdfs[inId].maxIn === undefined)
+				{
+					sdfs[inId].maxIn = 1;
+					for(var sdfj = 0; sdfj < h; sdfj++)
+					{
+						for(var sdfi = 0; sdfi < w; sdfi++)
+						{
+							if(sdfs[inId].val[ind2d(sdfi,sdfj)])
+							{
+								var d = len(sdfs[inId].dist[ind2d(sdfi,sdfj)]);
+								if(d > sdfs[inId].maxIn)
+								{
+									sdfs[inId].maxIn = d;
+								}
+							}
+						}
+					}
+				}
+				val = lerp(v0, v1, len(sdfs[inId].dist[ind]) / sdfs[inId].maxIn);
 				imgData.data[ind*4] = val;
 				imgData.data[ind*4+1] = val;
 				imgData.data[ind*4+2] = val;
@@ -203,9 +273,8 @@ function drawProcessedImage()
 							}
 						}
 					}
-					console.log(sdfs[outId].maxOut);
 				}
-				val = lerp(sdfs[outId].avg, sdfs[outId].avg-posterizeStepSize, len(sdfs[outId].dist[ind]) / sdfs[outId].maxOut);
+				val = lerp(v0, v1, 1-(len(sdfs[outId].dist[ind]) / sdfs[outId].maxOut));
 				val = val < 0? 0 : val;
 				imgData.data[ind*4] = val;
 				imgData.data[ind*4+1] = val;
@@ -223,6 +292,7 @@ function drawProcessedImage()
 	ctx.putImageData(imgData, 0, 0);
 	refreshPreview();
 	pendingDraw = false;
+	
 }
 
 function debugDrawSDF(id)
@@ -416,6 +486,14 @@ function start()
 			stepSlider.value = posterizeStep;
 		}
 	};
+	baseStepSlider = document.getElementById("baseStepSlider");
+	baseStepSlider.oninput = ()=>
+	{
+		if(!pendingDraw && sdfs !== undefined)
+		{
+			drawProcessedImage();
+		}
+	}
 }
 function handleDrop(e) {
   let dt = e.dataTransfer;
