@@ -384,16 +384,16 @@ function processImage()
 function mainFunction()
 {
 	c_preview = document.getElementById("previewCanvas");
-	c_preview.width = img.width;
-	c_preview.height = img.height;
+	c_preview.width = img.naturalWidth;
+	c_preview.height = img.naturalHeight;
 	gl_preview = c_preview.getContext('webgl', { premultipliedAlpha: false, preserveDrawingBuffer: true });
 	pgm_preview = mApp.glCreateProgram(gl_preview, sharedVertSource, baseFragSource);
 	previewThresSlider = document.getElementById("previewThresSlider");
 	previewThresSlider.oninput = refreshPreview;
 	
 	//get the pixel data
-	canvas.width = img.width;
-	canvas.height = img.height;
+	canvas.width = img.naturalWidth;
+	canvas.height = img.naturalHeight;
 	
 	ctx = canvas.getContext('2d');
 	ctx.drawImage(img,0,0,canvas.width,canvas.height);
